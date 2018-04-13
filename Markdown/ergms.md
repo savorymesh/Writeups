@@ -1,5 +1,6 @@
-
-# Exponential Random Graph Models (ERGM)
+---
+title: ERGMs
+---
 
 This is a writeup to help me better understand EGRMs. I am a bit dubious about
 their specification as of right now.

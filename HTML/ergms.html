@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ERGMs</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      .smallcaps{font-variant: small-caps;}
+      .line-block{white-space: pre-line;}
+      .column{display: inline-block;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">ERGMs</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#sufficiency">Sufficiency</a></li>
+</ul>
+</nav>
+<p>This is a writeup to help me better understand EGRMs. I am a bit dubious about their specification as of right now.</p>
+<p>To understand the exponential random graph model, I think it’s important to first conduct a review of sufficient statistics as well as exponential families of distributions.</p>
+<p>A brief remark about notation: to better illustrate the concept of sufficiency, I will often use the notation <span class="math inline">\(P(X = x \ | \ \theta)\)</span> in lieu of <span class="math inline">\(P_{\theta} (X = x)\)</span>. In general, I have always found probability notation to be quite awkward to work with.</p>
+<h3 id="sufficiency">Sufficiency</h3>
+<p>We’ll first discuss the concept of sufficiency, a fundamental concept in the theory of statistics.</p>
+<p>Let <span class="math inline">\(\mathbf X = (X_1, X_2, \ldots, X_n)\)</span> be an i.i.d. sample from a probability distribution parameterized by <span class="math inline">\(\theta\)</span>. We say the statistic <span class="math inline">\(\mathbf T(\mathbf X ) = \big (T_1 \mathbf (X), \ T_2 \mathbf (X), \ \ldots, T_n \mathbf (X) \big )\)</span> is <em>sufficient</em> for <span class="math inline">\(\theta\)</span> if conditioning on <span class="math inline">\(\mathbf T\)</span> removes the dependency of <span class="math inline">\(\mathbf{X}\)</span> on <span class="math inline">\(\theta\)</span>. That is <span class="math display">\[
+P(\mathbf X = \mathbf x \ | \ \mathbf T = \mathbf t, \theta) =
+P(\mathbf X =\mathbf x \ | \ \mathbf T = \mathbf t)
+\]</span> is valid for all <span class="math inline">\(\mathbf x\)</span> and <span class="math inline">\(\mathbf t\)</span>. Often, this is interpreted as that the sufficient statistic ‘captures’ all the information about <span class="math inline">\(\theta\)</span> in the sample. To illustrate this concept, we’ll do an obligatory example with the Bernoulli distribution.</p>
+<p>Suppose <span class="math inline">\(\mathbf{X}\)</span> is drawn from a Bernoulli(<span class="math inline">\(p\)</span>) distribution. Let’s show that <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is sufficient for <span class="math inline">\(p\)</span>. Of course, <span class="math inline">\(T \sim\)</span> Binomial(<span class="math inline">\(n, \ p\)</span>). Then <span class="math display">\[
+P(\mathbf X = \mathbf x \ | \ T=t, \theta) =
+\frac{P(\mathbf X = \mathbf x, \ T = t \ | \ \theta)}{P(T = t \ | \ \theta)}
+\\
+= \frac{P(\mathbf X = \mathbf x \ | \ \theta)}{P(T = t \ | \ \theta)}.
+\]</span> since the event <span class="math inline">\(\{T = t\} \subset \{X = x\}\)</span>.</p>
+</body>
+</html>
