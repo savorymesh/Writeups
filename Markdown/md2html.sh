@@ -8,7 +8,7 @@ do
         --toc \
         --toc-depth=3 \
         --mathjax \
-        -c pandoc.css \
+        -c writeups.css \
         $file \
         -o $filename.html
 done

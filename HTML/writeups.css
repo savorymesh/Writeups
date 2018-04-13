@@ -3,6 +3,10 @@
  * Further modification done
  */
 
+@import url('https://fonts.googleapis.com/css?family=PT+Sans');
+@import url('https://fonts.googleapis.com/css?family=Merriweather');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
 html {
   font-size: 100%;
   overflow-y: scroll;
@@ -12,7 +16,7 @@ html {
 
 body {
   color: #444;
-  font-family: Times, 'Times New Roman', serif;
+  font-family: "Merriweather", "DejaVu Serif", "Bitstream Vera Serif", serif;
   font-size: 12px;
   line-height: 1.7;
   padding: 1em;
@@ -71,6 +75,7 @@ img {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: "PT Sans", Helvetica, sans-serif;
   line-height: 125%;
   margin-top: 1em;
   font-weight: normal;
