@@ -16,6 +16,9 @@ I will often use the notation $P(X = x \ | \ \theta)$ in lieu of $P_{\theta} (X 
 x)$. In general, I have always found probability notation to be quite awkward to
 work with.
 
+Mathematical correctness obliges me to remark that all discussion is done
+excluding non-measurable functions, etc.
+
 ## Sufficiency
 
 We'll first discuss the concept of sufficiency, a fundamental concept in the
@@ -44,7 +47,7 @@ Suppose $X$ is drawn from a Bernoulli($p$) distribution. Let's show
 that $T = \sum_{i=1}^n X_i$ is sufficient for $p$. Of course, $T \sim$
 Binomial($n, \ p$). In general, when proving suffiency, we can note that
 $$
-P( X =  x \ | \ T=t, \theta)
+P( X =  x \ | \ T=t, \ \theta)
 = \frac{P( X =  x, \ T = t \ | \ \theta)}{P(T = t \ | \ \theta)}
 = \frac{P( X =  x \ | \ \theta)}{P(T = t \ | \theta)}
 $$
@@ -61,19 +64,22 @@ $$
 Since the final expression does not contain $p$, we have that $T$ is sufficient
 for $p$. NB that while the sample $X$ is of arbitrary dimension $n$, this shows
 the information it contains about $p$ can be captured in a single value $T(X)$.
+Moreover, it can be shown that injective functions of sufficient statistics are
+themselves sufficient statistics. It follows then that the natural estimator of
+$p$, the sample mean $\bar X = \frac{T}{n}$ is also sufficient for $p$.
 
 While it was not too much work to prove sufficiency in the previous example,
 proving sufficiency using the definition can be daunting for more complicated
 estimation problems. The *Fisher-Neyman factorization theorem* simplifies this
 task by providing an alternative method to characterize sufficiency: if the
-distribution $X$ has density $f(x \ | \ \theta)$, we have that $T(X)$ is
+distribution for $X$ has density $f(x \ | \ \theta)$, we have that $T(X)$ is
 sufficient if and only if we can find $h(x)$ and $g(T(x), \theta)$ such that
 $f(x \ | \ \theta) = g(T(x), \theta) h(x)$. In other words, a statistic is
-sufficient if and only we can factor the density of the sample into two parts :
-one that depends on the parameters and on $x$ only through the statistic $T(X)$
-and the other that can more freely depend on the data $x$. For example, with our
-simple example with the Bernoulli distribution, we could alternatively prove
-that $T = \sum_{i=1}^n X_i$ is sufficient by noting
+sufficient if and only we can factor the joint density of the sample into two
+parts : one that depends on the parameters and on $x$ only through the statistic
+$T(X)$ and the other that can more freely depend on the data $x$. For example,
+with our simple example with the Bernoulli distribution, we could alternatively
+prove that $T = \sum_{i=1}^n X_i$ is sufficient by noting
 $$
 f(x \ | \ \theta) = P(X = x \ | \ \theta)
 = \prod_{i=1}^n p^{x_i} (1-p)^{1 - x_i}
@@ -83,15 +89,46 @@ f(x \ | \ \theta) = P(X = x \ | \ \theta)
 $$
 so that we have $g(T(x), p) = p^{t} (1-p)^{n - t}$ and $h(x) = 1$.
 
+As an additional note, we remark that sufficient statistics always exist as,
+amusingly, we can consider the sample $X$ itself as a statistic.
+
 ### Minimal Sufficiency and Completeness
 
 Sufficiency is inherently tied to the concept of data reduction. As remarked
 before, sufficient statistics capture all the information the sample contains
 for estimation of appropriate parameters. As there can be multiple sufficient
 statistics for given parameters, we naturally would like to find one that
-summarizes the data as efficiently as possible. This brings us to the concept of
-minimal sufficient statistics. A *minimal sufficient statistic* for the
+summarizes the data as efficiently as possible. This brings us to the concept
+of minimal sufficient statistics. A *minimal sufficient statistic* for the
 parameter(s) $\theta$ is a sufficient statistic that is a function of every
-other sufficient statistic for $\theta$. Because taking a function  
+other sufficient statistic for $\theta$. Because functions can only map values
+in their domain to one value in the codomain, but a value in the codomain may
+have many values mapped to it, minimal sufficient statistics provide the most
+data reduction among sufficient statistics. Outside of rare pathological cases,
+minimal sufficient statistics always exist outside. Any injective function of a
+minimal sufficient statistic is another minimal sufficient statistic. Modulo
+injective mappings, however, minimal sufficient statistics are unique.
+
+Sufficient statistics seem to be quite distinguished statistics. Historically,
+statisticians tried to prove several results about sufficient statistics.
+However, they found they needed an additional condition to hold to complete the
+proofs. This might be the reason behind the name for *complete statistics*.
+(Just kidding). We say a statistic $T(X)$ is *complete* if for every real-valued function $g$ we have that for all values of $\theta$
+$$
+E_\theta(g(T)) = 0 \implies P_\theta (g(T)) = 0.
+$$
+Completeness is a notoriously confusing property to interpret on first glance.
+While there are some belabored attempts to interpret completeness such as [this one](http://www2.math.ou.edu/~cremling/teaching/lecturenotes/stat/ln5.pdf),
+it is often simply regarded as being an extra technical condition to check to
+obtain results for sufficient statistics. If a minimal sufficient statistic
+exists, any complete sufficient statistic is automatically minimal sufficient
+for $\theta$.
+
+### Results Concerning Sufficient Statistics
+
+In the beginning of this section, we remarked that 'good' estimators are
+typically functions of sufficient statistics. We will clarify that statement
+in this subsection.
+
 
 ## Exponential Families of Distributions

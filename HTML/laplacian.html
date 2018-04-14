@@ -1,27 +1,19 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>The Laplacian</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      .smallcaps{font-variant: small-caps;}
-      .line-block{white-space: pre-line;}
-      .column{display: inline-block;}
-  </style>
-  <link rel="stylesheet" href="writeups.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="writeups.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
 </head>
 <body>
-<header>
+<div id="header">
 <h1 class="title">The Laplacian</h1>
-</header>
-<nav id="TOC">
+</div>
+<div id="TOC">
 <ul>
 <li><a href="#grad">Grad</a></li>
 <li><a href="#div">Div</a></li>
@@ -30,7 +22,7 @@
 <li><a href="#eigenfunctions-of-the-laplacian-can-you-hear-the-shape-of-a-drum">Eigenfunctions of the Laplacian: Can you hear the shape of a drum?</a></li>
 <li><a href="#remarks-on-generalization">Remarks on generalization</a></li>
 </ul>
-</nav>
+</div>
 <p>In this section we will introduce the Laplacian, an operator of distinguished importance in the theory of partial differential equations, probability theory, inverse problems, and the characterization of particular domains. We will define the Laplacian in terms of the gradient and the divergence: this is the definition most frequently used to generalize the Laplacian to other domains.</p>
 <h3 id="grad">Grad</h3>
 <p>Let us first consider continuously differentiable real-valued functions on <span class="math inline">\(\mathbb{R}^n\)</span>. Let <span class="math inline">\(f\)</span> be such a function. The well-known <em>gradient</em> of <span class="math inline">\(f\)</span> is the vector-valued function denoted by grad <span class="math inline">\(f\)</span> (alternatively <span class="math inline">\(\nabla f\)</span>) and is given by the formula <span class="math display">\[
@@ -38,7 +30,7 @@
                   \frac{\partial f}{\partial x_2},
                   \ldots,
                    \frac{\partial f}{\partial x_n}).
-\]</span> The gradient is a natural generalization of the derivative of a function of a single variable. It possesses numerous interpretations and usages: perhaps the most ubiquitous of these is the fact that the gradient provides the direction of steepest ascent for <span class="math inline">\(f\)</span>. This makes the gradient of a function a tool frequently used for mathematical optimization, but we won’t be discussing that further here. If <span class="math inline">\(F\)</span> is a vector field on <span class="math inline">\(\mathbb{R}^n\)</span> and grad <span class="math inline">\(f = F\)</span>, we will refer to <span class="math inline">\(f\)</span> as a <em>potential function</em> for <span class="math inline">\(F\)</span>.</p>
+\]</span> The gradient is a natural generalization of the derivative of a function of a single variable. It possesses numerous interpretations and usages: perhaps the most ubiquitous of these is the fact that the gradient provides the direction of steepest ascent for <span class="math inline">\(f\)</span>. This makes the gradient of a function a tool frequently used for mathematical optimization, but we won't be discussing that further here. If <span class="math inline">\(F\)</span> is a vector field on <span class="math inline">\(\mathbb{R}^n\)</span> and grad <span class="math inline">\(f = F\)</span>, we will refer to <span class="math inline">\(f\)</span> as a <em>potential function</em> for <span class="math inline">\(F\)</span>.</p>
 <h3 id="div">Div</h3>
 <p>Now let <span class="math inline">\(F = (F_1, F_2, \ldots, F_n)\)</span> be a continuously differentiable vector field defined on <span class="math inline">\(\mathbb{R}^n\)</span> (or a suitable subset thereof). The <em>divergence</em> of <span class="math inline">\(F\)</span> is a measure of whether our vector field tends to act as a source or a sink. We define the divergence of <span class="math inline">\(F\)</span> as <span class="math display">\[
 \text{div } F := \frac{\partial F_1}{\partial x_1} +
@@ -63,17 +55,17 @@
 <p><span class="math display">\[
 \frac{\partial u}{\partial t} = \alpha \ (\Delta_x u)
 \]</span> with <span class="math inline">\(\alpha\)</span> defined as some positive constant and <span class="math inline">\(\Delta_x\)</span> being used to represent that the Laplacian is acting through the spatial dimensions <span class="math inline">\(\mathbb{R}^n\)</span> rather than the temporal dimension <span class="math inline">\(\mathbb{R}^+\)</span>. The heat equation, as evidenced by the name, is used to model the evolution of the distribution of heat in a given region over time. Solutions to the heat equation have very strong tendencies to smooth out over time; in fact, one finds that initial discontinuities specified through initial value conditions will instantly smooth out.</p>
-<p>Now, with the heat equation, one can imagine the heat in the region eventually settling into a steady state, so that <span class="math inline">\(\frac{\partial u}{\partial t} = 0\)</span>. This leads us to the prototypical elliptic partial differential equation, <em>Laplace’s equation</em>. We now seek a function <span class="math inline">\(u\)</span> defined on <span class="math inline">\(\Omega \subseteq \mathbb{R}^n\)</span> such that <span class="math display">\[
+<p>Now, with the heat equation, one can imagine the heat in the region eventually settling into a steady state, so that <span class="math inline">\(\frac{\partial u}{\partial t} = 0\)</span>. This leads us to the prototypical elliptic partial differential equation, <em>Laplace's equation</em>. We now seek a function <span class="math inline">\(u\)</span> defined on <span class="math inline">\(\Omega \subseteq \mathbb{R}^n\)</span> such that <span class="math display">\[
 \Delta u = 0.
-\]</span> Solutions to Laplace’s equation are given the name <em>harmonic functions</em>. They are known to possess a number of particularly nice properties: one remarkable one is that all harmonic functions are analytic. In other words, they have at all points a local convergent power series representation, a smoothness condition even stronger than <span class="math inline">\(C^\infty\)</span> differentiability. Laplace’s equation has ties to complex analysis: solutions to the Cauchy-Riemann equations will individually satisfy Laplace’s equation. There are ties to probability theory as well. For example, the expected hitting time of a random walk on a regular lattice generates a solution to a discretized version of Laplace’s equation with Dirichlet boundary conditions. The inhomogeneous version of Laplace’s equation is important enough to deserve a mention of its own: for <em>Poisson’s equation</em>, we seek <span class="math inline">\(u\)</span> such that <span class="math display">\[
+\]</span> Solutions to Laplace's equation are given the name <em>harmonic functions</em>. They are known to possess a number of particularly nice properties: one remarkable one is that all harmonic functions are analytic. In other words, they have at all points a local convergent power series representation, a smoothness condition even stronger than <span class="math inline">\(C^\infty\)</span> differentiability. Laplace's equation has ties to complex analysis: solutions to the Cauchy-Riemann equations will individually satisfy Laplace's equation. There are ties to probability theory as well. For example, the expected hitting time of a random walk on a regular lattice generates a solution to a discretized version of Laplace's equation with Dirichlet boundary conditions. The inhomogeneous version of Laplace's equation is important enough to deserve a mention of its own: for <em>Poisson's equation</em>, we seek <span class="math inline">\(u\)</span> such that <span class="math display">\[
 \Delta u = f
-\]</span> where <span class="math inline">\(f\)</span> is some provided function. Besides having applications in modeling physical processes, Poisson’s equation is utilized in inverse problems where one seeks to find the closest candidate scalar potential function for a given vector field.</p>
+\]</span> where <span class="math inline">\(f\)</span> is some provided function. Besides having applications in modeling physical processes, Poisson's equation is utilized in inverse problems where one seeks to find the closest candidate scalar potential function for a given vector field.</p>
 <p>The final partial differential equation we will mention is the <em>wave equation</em>, the prototypical hyperbolic partial differential equation. The wave equation has a similar setup to the heat equation. Let <span class="math inline">\(\Omega \subseteq \mathbf{R}^n\)</span>. We would like to find <span class="math inline">\(u(x, t)\)</span> defined on <span class="math inline">\(\Omega \times \mathbb{R}^+\)</span> such that <span class="math display">\[
 \frac{\partial^2 u}{\partial t^2} = c^2 \ (\Delta_x u)
 \]</span> where <span class="math inline">\(c\)</span> is a constant governing the speed of travelling displacements. Shockingly, the wave equation is mainly used to model wave-like phenomena. Initial discontinuities persist with solutions to the wave equation as time moves forward, giving a sharp contrast with solutions to the heat equation.</p>
 <h3 id="eigenfunctions-of-the-laplacian-can-you-hear-the-shape-of-a-drum">Eigenfunctions of the Laplacian: Can you hear the shape of a drum?</h3>
 <p>To do later. Talk about characterizing a planar domain through the spectrum of the Laplacian. Tie in to graph isomorphism problem.</p>
 <h3 id="remarks-on-generalization">Remarks on generalization</h3>
-<p>The Laplacian that we have been discussing is not technically the one that is generalized to discrete settings. The one that is actually generalized is the <em>Laplace-Beltrami operator</em>, informally known as the manifold Laplacian. The Laplace-Beltrami operator allows us to define a Laplacian on a Riemannian manifold without any reference to an ambient space the manifold is embedded in. Thus, it is an intrinsic operator to the manifold. The Laplacian that we have been discussing in Euclidean space does not hold that property, i.e. computing the Laplacian of a function on a subspace of <span class="math inline">\(\mathbb{R}^n\)</span> cannot be done without reference to <span class="math inline">\(\mathbb{R}^n\)</span>.</p>
+<p>The Laplacian that we have been discussing is not technically the one that is generalized to discrete settings. The one that is actually generalized is the <em>Laplace-Beltrami operator</em>, informally known as the manifold Laplacian. The Laplace-Beltrami operator allows us to define a Laplacian on a Riemannian manifold without any reference to an ambient space the manifold is embedded in. Thus, it is an intrinsic operator to the manifold. The Laplacian that we have been discussing in Euclidean space does not hold that property, i.e. computing the Laplacian of a function on a subspace of <span class="math inline">\(\mathbb{R}^n\)</span> cannot be done without reference to <span class="math inline">\(\mathbb{R}^n\)</span>.</p>
 </body>
 </html>
