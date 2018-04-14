@@ -79,26 +79,22 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 125%;
   margin-top: 1em;
   font-weight: normal;
-}
-
-h1, h2, h4, h6 {
-  color : Maroon;
-}
-
-h3, h5 {
-  color : DarkSlateGray
+  color : #a62c11;
 }
 
 h1 {
   font-size: 2.4em;
+  color : #60266f;
 }
 
 h2 {
-  font-size: 1.8em;
+  font-size: 1.7em;
+  color : #266f29;
 }
 
 h3 {
   font-size: 1.4em;
+  font-weight: bold;
 }
 
 h4 {
@@ -111,6 +107,7 @@ h5 {
 
 h6 {
   font-size: 1.0em;
+  font-weight: bold;
 }
 
 blockquote {
@@ -155,7 +152,7 @@ b, strong {
 }
 
 em {
-color: Maroon;
+color: #7c2e15;
 font-style: normal;
 }
 

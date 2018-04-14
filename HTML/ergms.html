@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>ERGMs</title>
+  <title>Exponential Random Graph Models</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       .smallcaps{font-variant: small-caps;}
@@ -19,33 +19,48 @@
 </head>
 <body>
 <header>
-<h1 class="title">ERGMs</h1>
+<h1 class="title">Exponential Random Graph Models</h1>
 </header>
 <nav id="TOC">
 <ul>
-<li><a href="#sufficiency">Sufficiency</a></li>
+<li><a href="#brief-remarks">Brief Remarks</a></li>
+<li><a href="#sufficiency">Sufficiency</a><ul>
+<li><a href="#minimal-sufficiency-and-completeness">Minimal Sufficiency and Completeness</a></li>
+</ul></li>
+<li><a href="#exponential-families-of-distributions">Exponential Families of Distributions</a></li>
 </ul>
 </nav>
+<h2 id="brief-remarks">Brief Remarks</h2>
 <p>This is a writeup to help me better understand EGRMs. I am a bit dubious about this method of modelling right now.</p>
 <p>To understand the exponential random graph model, I think it’s important to first conduct a review of sufficient statistics as well as exponential families of distributions.</p>
 <p>A brief remark about notation: to better illustrate the concept of sufficiency, I will often use the notation <span class="math inline">\(P(X = x \ | \ \theta)\)</span> in lieu of <span class="math inline">\(P_{\theta} (X = x)\)</span>. In general, I have always found probability notation to be quite awkward to work with.</p>
-<h3 id="sufficiency">Sufficiency</h3>
-<p>We’ll first discuss the concept of sufficiency, a fundamental concept in the theory of statistics.</p>
+<h2 id="sufficiency">Sufficiency</h2>
+<p>We’ll first discuss the concept of sufficiency, a fundamental concept in the theory of statistics. At a high level, sufficient statistics are those which are able to summarize all relevant information held in a sample regarding specific parameters. ‘Good’ estimators are typically functions of sufficient statistics. Indeed, estimators which don’t depend on sufficient statistics can often be improved through conditioning on sufficient statistics, a process known as <em>Rao-Blackwellizing</em> an estimator.</p>
 <p>Let <span class="math inline">\(X = (X_1, X_2, \ldots, X_n)\)</span> be an i.i.d. sample from a probability distribution parameterized by finite-dimensional <span class="math inline">\(\theta\)</span>. We say the statistic <span class="math inline">\(T( X ) = \big (T_1 (X), \ T_2 (X), \ \ldots, T_k (X) \big )\)</span> is <em>sufficient</em> for <span class="math inline">\(\theta\)</span> if conditioning on <span class="math inline">\(T\)</span> removes the dependency of <span class="math inline">\(X\)</span> on <span class="math inline">\(\theta\)</span>. That is <span class="math display">\[
 P( X =  x \ | \ T = t, \ \theta)
 = P( X = x \ | \ T = t)
-\]</span> is valid for all <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>. Often, this is interpreted as that the sufficient statistic ‘captures’ all the information about <span class="math inline">\(\theta\)</span> in the sample. To illustrate this concept, we’ll do an obligatory example with the Bernoulli distribution.</p>
+\]</span> is valid for all <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>. This is typically given the interpretation that the sufficient statistic ‘captures’ all the information about <span class="math inline">\(\theta\)</span> in the sample. To illustrate this concept, we’ll do an obligatory example with the Bernoulli distribution.</p>
 <p>Suppose <span class="math inline">\(X\)</span> is drawn from a Bernoulli(<span class="math inline">\(p\)</span>) distribution. Let’s show that <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is sufficient for <span class="math inline">\(p\)</span>. Of course, <span class="math inline">\(T \sim\)</span> Binomial(<span class="math inline">\(n, \ p\)</span>). In general, when proving suffiency, we can note that <span class="math display">\[
 P( X =  x \ | \ T=t, \theta)
 = \frac{P( X =  x, \ T = t \ | \ \theta)}{P(T = t \ | \ \theta)}
-= \frac{P( X =  x \ | \ \theta)}{P(T = t \ | \theta)}.
+= \frac{P( X =  x \ | \ \theta)}{P(T = t \ | \theta)}
 \]</span> since the event <span class="math inline">\(\{T = t\} \subseteq \{X = x\}\)</span>. So, for our case, we have <span class="math display">\[
 P( X =  x \ | \ T=t, \ p)
-= \frac{\prod_{i=1}^n p^{x_i} (1-p)^{1 - x_i}}{\binom{n}{t} p^t(1-p)^t}
-= \frac{p^{\sum_{i=1}^n x_i} (1-p)^{n - \sum_{i=1}^n x_i}} {\binom{n}{t} p^t(1-p)^t}
+= \frac{\prod_{i=1}^n p^{x_i} (1-p)^{1 - x_i}}{\binom{n}{t} p^t(1-p)^{n-t}}
+= \frac{p^{\sum_{i=1}^n x_i} (1-p)^{n - \sum_{i=1}^n x_i}} {\binom{n}{t} p^t(1-p)^{n-t}}
 \\
-= \frac{p^t(1-p)^t}{\binom{n}{t} p^t(1-p)^t}
+= \frac{p^t(1-p)^t}{\binom{n}{t} p^t(1-p)^{n-t}}
 = \frac{1}{\binom{n}{t}}.
-\]</span> Since the final expression does not contain <span class="math inline">\(p\)</span>, we have that <span class="math inline">\(T\)</span> is sufficient for <span class="math inline">\(p\)</span>.</p>
+\]</span></p>
+<p>Since the final expression does not contain <span class="math inline">\(p\)</span>, we have that <span class="math inline">\(T\)</span> is sufficient for <span class="math inline">\(p\)</span>. While it was not too much work to prove sufficiency in this example, proving sufficiency using the definition can be daunting for more complicated estimation problems. The <em>Fisher-Neyman factorization theorem</em> simplifies this task by providing an alternative method to characterize sufficiency: if the distribution <span class="math inline">\(X\)</span> has density <span class="math inline">\(f(x \ | \ \theta)\)</span>, we have that <span class="math inline">\(T(X)\)</span> is sufficient if and only if we can find <span class="math inline">\(h(x)\)</span> and <span class="math inline">\(g(T(x), \ \theta)\)</span> such that <span class="math inline">\(f(x \ | \ \theta) = g(T(x), \ \theta) h(x)\)</span>. In other words, a statistic is sufficient if we can factor the density function of the sample into two parts : one that depends on the parameters and on <span class="math inline">\(x\)</span> only through the statistic <span class="math inline">\(T(X)\)</span> and the other that can more freely depend on the data <span class="math inline">\(x\)</span>. For example, with our simple example with the Bernoulli distribution, we could alternatively prove that <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is sufficient by noting <span class="math display">\[
+f(x \ | \ \theta) = P(X = x \ | \ \theta)
+= \prod_{i=1}^n p^{x_i} (1-p)^{1 - x_i}
+\\
+= p^{\sum_{i=1}^n x_i} (1-p)^{n - \sum_{i=1}^n x_i}
+= p^{t} (1-p)^{n - t} \times 1
+\]</span> so that we have <span class="math inline">\(g(T(x), \ p) = p^{t} (1-p)^{n - t}\)</span> and <span class="math inline">\(h(x) = 1\)</span>.</p>
+<h3 id="minimal-sufficiency-and-completeness">Minimal Sufficiency and Completeness</h3>
+<p>Sufficiency is inherently tied to the concept of data reduction. As remarked before, sufficient statistics are</p>
+<h2 id="exponential-families-of-distributions">Exponential Families of Distributions</h2>
 </body>
 </html>
