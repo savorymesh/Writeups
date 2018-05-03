@@ -113,7 +113,8 @@ Sufficient statistics seem to be quite distinguished statistics. Historically,
 statisticians tried to prove several results about sufficient statistics.
 However, they found they needed an additional condition to hold to complete the
 proofs. This might be the reason behind the name for *complete statistics*.
-(Just kidding). We say a statistic $T(X)$ is *complete* if for every real-valued function $g$ we have that for all values of $\theta$
+(Just kidding). We say a statistic $T(X)$ is *complete* if for every real-valued
+function $g$ we have that for all values of $\theta$
 $$
 E_\theta(g(T)) = 0 \implies P_\theta (g(T)) = 0.
 $$
@@ -128,7 +129,11 @@ for $\theta$.
 
 In the beginning of this section, we remarked that 'good' estimators are
 typically functions of sufficient statistics. We will clarify that statement
-in this subsection.
+in this subsection. Our first result is probably the easiest to see yet also
+one of the most important: the maximum likelihood estimator of a parameter must
+be a function of a sufficient statistics.
+
+- UMVUEs link to sufficient statistics
 
 
 ## Exponential Families of Distributions
