@@ -21,7 +21,7 @@ body {
   line-height: 1.7;
   padding: 1em;
   margin: auto;
-  max-width: 60em;
+  max-width: 55em;
   background: #fefefe;
 }
 
@@ -83,30 +83,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.4em;
+  font-size: 2.7em;
   color : #60266f;
 }
 
 h2 {
-  font-size: 1.7em;
-  color : #266f29;
+  font-size: 2.0em;
+  color : #29832c;
 }
 
 h3 {
-  font-size: 1.4em;
+  font-size: 1.6em;
   font-weight: bold;
+  color : #0e5660;
 }
 
 h4 {
-  font-size: 1.3em;
+  font-size: 1.4em;
 }
 
 h5 {
-  font-size: 1.2em;
+  font-size: 1.3em;
 }
 
 h6 {
-  font-size: 1.0em;
+  font-size: 1.1em;
   font-weight: bold;
 }
 
