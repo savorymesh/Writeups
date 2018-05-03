@@ -87,7 +87,7 @@ bound* or the *Evidence Lower BOund (ELBO)*: for any $q \in \mathcal Q$, we have
 $$
 \text{log } p(x) = \text{log } \int \frac{q(z|x)}{q(z|x)} p(x,z) dz \geq
 \int q(z|x)\text{ log }\frac{p(x,z)}{q(z|x)} dz
-= \text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)} \\.
+= \text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)}.
 $$
 Here, Jensen's inequality has been applied to get the inequality in the middle.
 You may have seen this bound before in the derivation of the EM algorithm.
@@ -116,15 +116,17 @@ step further. Let's say we want to maximize the log-likelihood term $\text{log }
 p(x)$. We do not necessarily know $p$ in advance, so that this becomes a density
 estimation problem. Direct density estimation problems are difficult, so what we
 are going to do is instead maximize the ELBO in an attempt to  maximize
-$\text{log } p(x)$. Previously, we noticed the the ELBO decomposes into
+$\text{log } p(x)$. Let's reexamine the ELBO
 $$
-\text{log }p(x) - D \big (q(z|x), p(z|x) \big ).
+\text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)}.
 $$
-There are three things we can do to improve the ELBO. Obviously, we could
-improve it by improving $\text{log } p(x)$, but this is rather redundant,
-don't you think? So let's focus on the term $D \big (q(z|x), p(z|x) \big )$. We can improve
-this KL-divergence by our choice of $q(z|x)$ ... or by our choice of $p(z|x)$.
-With the variational autoencoder, we are going to optimize over both choices.
+Because the marginal $p(x, z)$ decomposes into $p(x|z) p(z)$, we can rewrite
+the ELBO as
+$$
+\text{E}_{q(z|x)} \text{ log }\frac{p(x|z)p(z)}{q(z|x)}.
+$$
+
+
 
 Let's now begin to work in a parametric setting. We will let $p(z|x)$ in
 $\mathcal P$ by indexed by $\theta$ in $\Theta$.
