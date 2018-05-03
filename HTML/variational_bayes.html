@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>The Variational Autoencoder</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      .smallcaps{font-variant: small-caps;}
+      .line-block{white-space: pre-line;}
+      .column{display: inline-block;}
+  </style>
+  <link rel="stylesheet" href="writeups.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">The Variational Autoencoder</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#variational-bayes">Variational Bayes</a><ul>
+<li><a href="#problem-setup">Problem Setup</a></li>
+<li><a href="#variational-inference">Variational Inference</a></li>
+</ul></li>
+<li><a href="#variational-autoencoders">Variational Autoencoders</a><ul>
+<li><a href="#density-estimation-and-the-elbo">Density Estimation and the ELBO</a></li>
+</ul></li>
+</ul>
+</nav>
+<h2 id="variational-bayes">Variational Bayes</h2>
+<h3 id="problem-setup">Problem Setup</h3>
+<p>Suppose we have a task in which we are given some data <span class="math inline">\(x\)</span> and are looking to model things with some latent variables <span class="math inline">\(Z\)</span> which govern our data. We will represent this probabilistically with a very simple model: <span class="math display">\[
+p(x, z) = p(x | z) p(z)
+\]</span> Of course, <span class="math inline">\(p(z)\)</span> is a prior on <span class="math inline">\(z\)</span> and <span class="math inline">\(p(x | z)\)</span> is a conditional likelihood. We do not have access to the marginal <span class="math inline">\(p(x)\)</span> (wouldn’t that be nice?).</p>
+<p>The generative process looks like</p>
+<ol type="1">
+<li>Sample some latent variables <span class="math inline">\(z\)</span> using <span class="math inline">\(p(z)\)</span></li>
+<li>Use the values of <span class="math inline">\(z\)</span> to draw from <span class="math inline">\(p(x | z)\)</span> to get <span class="math inline">\(x\)</span>.</li>
+</ol>
+<p>Given these initial conditions, we would like to calculate the posterior <span class="math inline">\(p(z | x)\)</span>. We know from Bayes rule that this is <span class="math display">\[
+p(z | x) = \frac{p(x, z) \times p (z)} {p(x)}.
+\]</span></p>
+<p>So why can’t we use compute this? Oftentimes, computing <span class="math inline">\(p(x)\)</span> turns out to be intractable. Here, <span class="math inline">\(p(x)\)</span> is called the <em>evidence</em>. If <span class="math inline">\(Z\)</span> is discrete, we must compute <span class="math display">\[
+\sum_{support(Z)} p(x | z) p(z).
+\]</span> As the size of <span class="math inline">\(z\)</span> increases, the difficulty of this sum grows exponentially. For example, if we have <span class="math inline">\(Z\)</span> be Bernoulli, we must compute <span class="math inline">\(2^n\)</span> sums if <span class="math inline">\(z\)</span> is of dimension <span class="math inline">\(n\)</span>. Similarly, if <span class="math inline">\(Z\)</span> is continuous, we may have issues computing <span class="math display">\[
+\int p(x | z) p(z) dz.
+\]</span> Having accepted that we can’t compute the posterior directly, we turn to other methods to approximate the posterior. One way of doing so is with MCMC, where we build a Markov chain whose stationary distribution represents our final outcome.</p>
+<figure align="center">
+<img width=900 src="https://theclevermachine.files.wordpress.com/2012/10/metropolis2.gif">
+<figcaption>
+Visualization of Metropolis sampler. The red line is the current proposal distribution, while the black line is the target distribution. From Dustin Stansbury’s website.
+</figcaption>
+</figure>
+<p>MCMC, however, is a beast to get going. I’ll talk about the Metropolis/Metropolis Hastings algorithm, since that is not only the most well known MCMC algorithm, but sadly also the only one I know. (The popular Gibbs sampling is a special form of Metropolis-Hastings.) Like the accept/reject method of sampling, Metropolis-Hastings requires the choice of proposal distributions. However, here, the choice of proposal is much more finicky then accept/reject. If the variance of the proposal is not large enough, we might get highly autocorrelated samples. If it is too small, we might get many rejections in our sampling. The chain may never converge in reasonable time. And so on. Properly utilizing this method is an art in itself. And even MCMC suffers from issues of scalability eventually.</p>
+<h3 id="variational-inference">Variational Inference</h3>
+<p>So, we want a new method of getting at the posterior. We now turn to variational inference. Variational inference involves approximation of the posterior through using members of a new family of distributions <span class="math inline">\(\mathcal Q\)</span> for which computation is much easier to evaluate (e.g. is tractable). We refer to <span class="math inline">\(\mathcal Q\)</span> as the <em>variational family</em>. We want to find <span class="math inline">\(q^*(z | x) \in \mathcal Q\)</span> which is most similar to the true posterior <span class="math inline">\(p(z | x)\)</span>. For now, we will measure this similarity/dissimilarity by using the Kullback-Leibler divergence, although other measures are certainly possible.</p>
+<p>I will use <span class="math inline">\(D\)</span> to represent the Kullback-Leibler divergence. With our current formulation, this means we want <span class="math inline">\(q^*(z | x)\)</span> such that <span class="math display">\[
+q^*(z | x) =
+\text{argmin}_{q(z | x) \in \mathcal Q} D \big (q(z|x), p(z|x) \big ).
+\]</span> There is a reason that the assymmetric KL-divergence is given in this order, but I will get to that later. Our optimization problem is intrinsically linked to a bound on the “loglihood” <span class="math inline">\(\text{log } p(x)\)</span> known as the <em>variational lower bound</em> or the <em>Evidence Lower BOund (ELBO)</em>: for any <span class="math inline">\(q \in \mathcal Q\)</span>, we have <span class="math display">\[
+\text{log } p(x) = \text{log } \int \frac{q(z|x)}{q(z|x)} p(x,z) dz \geq
+\int q(z|x)\text{ log }\frac{p(x,z)}{q(z|x)} dz
+= \text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)} \\.
+\]</span> Here, Jensen’s inequality has been applied to get the inequality in the middle. You may have seen this bound before in the derivation of the EM algorithm.</p>
+<p>Now, a simple manipulation of this bound using the identity <span class="math inline">\(p(x, z) = p(z | x) p(x)\)</span> shows that <span class="math display">\[
+\text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)}
+ = \text{E}_{q(z|x)} \text{ log }{p(x)} +
+\text{E}_{q(z|x)} \text{ log }\frac{p(z|x)}{q(z|x)} \\
+= \text{log }p(x) - D \big (q(z|x), p(z|x) \big ).
+\]</span> Note that we are able to remove the conditional expectation from <span class="math inline">\(\text{log } p(x)\)</span> as it does not depend on <span class="math inline">\(z\)</span>. Our final expression shows that with <span class="math inline">\(p(x)\)</span> held constant, maximizing the ELBO is equivalent to minimizing the same KL divergence <span class="math inline">\(D(q(z|x), p(z|x))\)</span>. Thus, variational inference is typically expressed in terms of maximizing the ELBO.</p>
+<h2 id="variational-autoencoders">Variational Autoencoders</h2>
+<h3 id="density-estimation-and-the-elbo">Density Estimation and the ELBO</h3>
+<p>Up until now, we have been thinking in terms of posterior inference, the traditional setting for variational Bayes. We are now going to take this one step further. Let’s say we want to maximize the log-likelihood term <span class="math inline">\(\text{log } p(x)\)</span>. We do not necessarily know <span class="math inline">\(p\)</span> in advance, so that this becomes a density estimation problem. Direct density estimation problems are difficult, so what we are going to do is instead maximize the ELBO in an attempt to maximize <span class="math inline">\(\text{log } p(x)\)</span>. Previously, we noticed the the ELBO decomposes into <span class="math display">\[
+\text{log }p(x) - D \big (q(z|x), p(z|x) \big ).
+\]</span> There are three things we can do to improve the ELBO. Obviously, we could improve it by improving <span class="math inline">\(\text{log } p(x)\)</span>, but this is rather redundant, don’t you think? So let’s focus on the term <span class="math inline">\(D \big (q(z|x), p(z|x) \big )\)</span>. We can improve this KL-divergence by our choice of <span class="math inline">\(q(z|x)\)</span> … or by our choice of <span class="math inline">\(p(z|x)\)</span>. With the variational autoencoder, we are going to optimize over both choices.</p>
+<p>Let’s now begin to work in a parametric setting. We will let <span class="math inline">\(p(z|x)\)</span> in <span class="math inline">\(\mathcal P\)</span> by indexed by <span class="math inline">\(\theta\)</span> in <span class="math inline">\(\Theta\)</span>.</p>
+<hr />
+<p><span class="math display">\[
+D \big (q(z | x), p(z | x) \big )
+= \text{E}_{q(z|x)} \text{ log }\frac{q(z|x)}{p(z|x)}
+\\
+= \text{E}_{q(z|x)} \text{ log }{q(z|x)} -
+\text{ E}_{q(z|x)} \text{ log } {p(z|x)}
+\\
+= \text{E}_{q(z|x)} \text{ log }{q(z|x)} -
+\text{ E}_{q(z|x)} \text{ log } {\frac{p(x|z)p(z)}{p(x)}}
+\]</span></p>
+</body>
+</html>

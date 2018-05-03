@@ -63,26 +63,27 @@ in our sampling. The chain may never converge in reasonable time. And so on.
 Properly utilizing this method is an art in itself. And even MCMC suffers from
 issues of scalability eventually.
 
-### Variational Inference and the ELBO
+### Variational Inference
 
 So, we want a new method of getting at the posterior. We now turn to variational
 inference. Variational inference involves approximation of the posterior through
-using members of a new family of distributions $Q$ for which computation is much
-easier to evaluate (e.g. is tractable). We refer to $Q$ as the *variational
-family*. We want to find $q^*(z | x) \in Q$ which is most similar to the true
-posterior $p(z | x)$. For now, we will measure this similarity/dissimilarity by
-using the Kullback-Leibler divergence, although other measures are certainly
-possible.
+using members of a new family of distributions $\mathcal Q$ for which
+computation is much easier to evaluate (e.g. is tractable). We refer to
+$\mathcal Q$ as the *variational family*. We want to find $q^*(z | x) \in
+\mathcal Q$ which is most similar to the true posterior $p(z | x)$. For now, we
+will measure this similarity/dissimilarity by using the Kullback-Leibler
+divergence, although other measures are certainly possible.
 
 I will use $D$ to represent the Kullback-Leibler divergence. With our current
 formulation, this means we want $q^*(z | x)$ such that
 $$
-q^*(z | x) = \text{argmin}_{q(z | x) \in Q} D(q(z|x), p(z|x)).
+q^*(z | x) =
+\text{argmin}_{q(z | x) \in \mathcal Q} D \big (q(z|x), p(z|x) \big ).
 $$
 There is a reason that the assymmetric KL-divergence is given in this order, but
 I will get to that later. Our optimization problem is intrinsically linked to a
 bound on the "loglihood" $\text{log } p(x)$ known as the *variational lower
-bound* or the *Evidence Lower BOund (ELBO)*: for any $q \in Q$, we have
+bound* or the *Evidence Lower BOund (ELBO)*: for any $q \in \mathcal Q$, we have
 $$
 \text{log } p(x) = \text{log } \int \frac{q(z|x)}{q(z|x)} p(x,z) dz \geq
 \int q(z|x)\text{ log }\frac{p(x,z)}{q(z|x)} dz
@@ -97,7 +98,7 @@ $$
 \text{E}_{q(z|x)} \text{ log }\frac{p(x,z)}{q(z|x)}
  = \text{E}_{q(z|x)} \text{ log }{p(x)} +
 \text{E}_{q(z|x)} \text{ log }\frac{p(z|x)}{q(z|x)} \\
-= \text{log }p(x) - D(q(z|x), p(z|x)).
+= \text{log }p(x) - D \big (q(z|x), p(z|x) \big ).
 $$
 Note that we are able to remove the conditional expectation from $\text{log }
 p(x)$ as it does not depend on $z$. Our final expression shows that with $p(x)$
@@ -107,17 +108,26 @@ expressed in terms of maximizing the ELBO.
 
 ## Variational Autoencoders
 
-### Decomposing the ELBO
+### Density Estimation and the ELBO
 
 Up until now, we have been thinking in terms of posterior inference, the
 traditional setting for variational Bayes. We are now going to take this one
 step further. Let's say we want to maximize the log-likelihood term $\text{log }
-p(x)$. We do not necessarily know $p$ in advance, so that this is essentially
-a density estimation problem. Density estimation problems are difficult, so
-what we are going to do is instead maximize the ELBO in an attempt to maximize
-$\text{log } p(x)$.
+p(x)$. We do not necessarily know $p$ in advance, so that this becomes a density
+estimation problem. Direct density estimation problems are difficult, so what we
+are going to do is instead maximize the ELBO in an attempt to  maximize
+$\text{log } p(x)$. Previously, we noticed the the ELBO decomposes into
+$$
+\text{log }p(x) - D \big (q(z|x), p(z|x) \big ).
+$$
+There are three things we can do to improve the ELBO. Obviously, we could
+improve it by improving $\text{log } p(x)$, but this is rather redundant,
+don't you think? So let's focus on the term $D \big (q(z|x), p(z|x) \big )$. We can improve
+this KL-divergence by our choice of $q(z|x)$ ... or by our choice of $p(z|x)$.
+With the variational autoencoder, we are going to optimize over both choices.
 
-
+Let's now begin to work in a parametric setting. We will let $p(z|x)$ in
+$\mathcal P$ by indexed by $\theta$ in $\Theta$.
 
 
 ---
