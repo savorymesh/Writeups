@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>The Variational Autoencoder</title>
+  <title>The Variational Autoencoder Part I</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       .smallcaps{font-variant: small-caps;}
@@ -19,7 +19,7 @@
 </head>
 <body>
 <header>
-<h1 class="title">The Variational Autoencoder</h1>
+<h1 class="title">The Variational Autoencoder Part I</h1>
 </header>
 <nav id="TOC">
 <ul>
@@ -31,6 +31,7 @@
 <li><a href="#density-estimation-and-the-elbo">Density Estimation and the ELBO</a></li>
 <li><a href="#the-road-towards-gradient-descent">The Road Towards Gradient Descent</a></li>
 <li><a href="#reparametrization-trick">Reparametrization Trick</a></li>
+<li><a href="#where-neural-nets-tie-in">Where Neural Nets Tie In</a></li>
 </ul></li>
 <li><a href="#recommended-reading">Recommended Reading</a></li>
 </ul>
@@ -39,7 +40,7 @@
 <h3 id="problem-setup">Problem Setup</h3>
 <p>Suppose we have a task in which we are given some data <span class="math inline">\(x\)</span> and are looking to model things with some latent variables <span class="math inline">\(Z\)</span> which govern our data. We will represent this probabilistically with a very simple model: <span class="math display">\[
 p(x, z) = p(x | z) p(z)
-\]</span> Of course, <span class="math inline">\(p(z)\)</span> is a prior on <span class="math inline">\(z\)</span> and <span class="math inline">\(p(x | z)\)</span> is a conditional likelihood. We do not have access to the marginal <span class="math inline">\(p(x)\)</span> (wouldn’t that be nice?).</p>
+\]</span> Here, <span class="math inline">\(p(z)\)</span> is a prior on <span class="math inline">\(z\)</span> and <span class="math inline">\(p(x | z)\)</span> is a conditional likelihood. We do not have access to the marginal <span class="math inline">\(p(x)\)</span> (wouldn’t that be nice?).</p>
 <p>The generative process looks like</p>
 <ol type="1">
 <li>Sample some latent variables <span class="math inline">\(z\)</span> using <span class="math inline">\(p(z)\)</span></li>
@@ -136,10 +137,40 @@ q_\lambda \big ( T_\lambda(\epsilon, x) \big ) \big ]
 + \text{E}_{p(\epsilon)} \big [ \nabla_\lambda
 \text{ log } q_\lambda \big ( T_\lambda(\epsilon, x) \big ) \big ].
 \]</span> have much lower variance than the score function estimator, allows us to reasonably perform gradient descent. Finally, the hard part is out of the way! With this being done, we can now optimize the ELBO through standard gradient descent methods.</p>
+<h3 id="where-neural-nets-tie-in">Where Neural Nets Tie In</h3>
+<p>Let’s go back a little bit and recall that our overall goal was to find <span class="math display">\[
+\text{max}_{\theta \in \Theta, \lambda \in \Lambda}
+\text{E}_{q_\lambda (z|x)} \text{ log }\frac{p_\theta(x|z)p(z)}{q_\lambda(z|x)}.
+\]</span> We remarked earlier that <span class="math inline">\(p_\theta(x|z)\)</span> can be thought of as related to the generative part of the model and learning <span class="math inline">\(q_\theta(z|x)\)</span> can be thought of as performing inference. Both of these quantities also have natural interpretations related to a certain type of architecture for neural networks.</p>
+<figure align="center">
+<img width=500 src="https://blog.keras.io/img/ae/autoencoder_schema.jpg">
+<figcaption>
+Simple diagram of autoencoder. Taken from the Keras blog.
+</figcaption>
+</figure>
+<p>In the standard autoencoder architecture, we use a neural network to predict it’s own inputs. The goal is to learn a latent represention. The <em>encoder</em> part of the network maps the original input to the latent representation, while the <em>decoder</em> part attempts to reconstruct the original input using the latent representation. Training is done to minimize some form of reconstruction loss.</p>
+<p>This is surprisingly similar to our variational inference task. In particular, we can think <span class="math inline">\(q_\lambda (z|x)\)</span> as being a “stochastic encoder”, <span class="math inline">\(Z\)</span> as a stochastic encoding, and <span class="math inline">\(p_\theta (x|z)\)</span> as a “stochastic decoder”. We can exploit this analogy by parametrizing <span class="math inline">\(p_\theta(x|z)\)</span> and <span class="math inline">\(q_\lambda (z|x)\)</span> using layers of a neural network. That is, the weights in the encoding layer of a neural network will form the parameters <span class="math inline">\(\theta\)</span>, and the weights in decoding layers will contain the parameters <span class="math inline">\(\lambda\)</span>.</p>
+<figure align="center">
+<img width=500 src="https://jaan.io/images/encoder-decoder.png">
+<figcaption>
+Diagram of variational autoencoder. Taken from the Jaan Altosaar’s blog. Note that I use different symbols for the parameters.
+</figcaption>
+</figure>
+<p>For example, we might choose <span class="math inline">\(p_\theta(x|z)\)</span> and <span class="math inline">\(q_\lambda(z|x)\)</span> to be both Gaussian (as often is the case), and parametrize them as <span class="math display">\[
+q_\lambda (z|x) \sim N(\mu = Enc_1 (\lambda, z), \ \Sigma = Enc_2(\lambda, z) \odot I) \\
+p_\theta (x|z) \sim N(\mu = Dec_1 (\theta, z), \ \Sigma = Dec_2(\theta, z) \odot I)
+\]</span> A typical prior on <span class="math inline">\(z\)</span> might simply be a standard multivariate normal <span class="math inline">\(p(z) \sim N(0, I)\)</span>. Here, the point of using neural networks is exploit their power as functional appromixators, so that we can learn complex configurations in the parameter space for the distributions.</p>
+<p>For the variational autoencoder with our current setup, the overall process can be thought of like this:</p>
+<ul>
+<li>We input some data <span class="math inline">\(x_i\)</span></li>
+<li>The encoder layers output some means and covariances for a multivariate normal conditional on <span class="math inline">\(x_i\)</span></li>
+<li>We can sample from a <span class="math inline">\(N(0, I)\)</span> random variable and convert them into a sample from <span class="math inline">\(z\)</span> using the output of the encoder layers and the reparametrization trick.</li>
+<li>The sample is now run through the decoder to get more means and covariances: this is a “stochastic decoding”.</li>
+</ul>
 <h2 id="recommended-reading">Recommended Reading</h2>
 <ul>
 <li><a href="http://ruishu.io/2018/03/14/vae/">Rui Shu’s blog post on density estimation</a></li>
-<li><a href="https://ermongroup.github.io/cs228-notes/extras/vae/">Stefano Ermon’s writeup</a></li>
+<li><a href="https://jaan.io/what-is-variational-autoencoder-vae-tutorial/">Jaan Altosaar’s writeup</a></li>
 <li><a href="http://approximateinference.org/accepted/HoffmanJohnson2016.pdf">Performing some ELBO surgery</a></li>
 <li><a href="https://arxiv.org/pdf/1702.08658.pdf">Towards a deeper understanding</a></li>
 </ul>
