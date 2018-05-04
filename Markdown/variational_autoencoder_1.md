@@ -12,7 +12,7 @@ represent this probabilistically with a very simple model:
 $$
 p(x, z) = p(x | z) p(z)
 $$
-Here, $p(z)$ is a prior on $z$ and $p(x | z)$ is a conditional likelihood.
+Here, $p(z)$ is a prior on $Z$ and $p(x | z)$ is a conditional likelihood.
 We do not have access to the marginal $p(x)$ (wouldn't that be nice?).
 
 The generative process looks like
@@ -209,7 +209,7 @@ We need to get an reasonable estimate of the gradient of the ELBO. To do so, we
 rely on a small trick known as the *reparametrization trick*. We attempt to
 represent the family of distributions $\mathcal Q$ in terms of a deterministic
 transformation $T_\lambda(\epsilon, x)$ of a fixed distribution $\epsilon$. This
-sounds more complicated than is really is. For example, if $\mathcal Q$ is the
+sounds more complicated than it really is. For example, if $\mathcal Q$ is the
 family of $N(x, \sigma)$ distributions, we can let $\epsilon$ be a standard
 $N(0,1)$ distribution. If $q_{\sigma^*} (z|x^*)$ is distributed as $N(x^*,
 \sigma^*)$, we write the distribution in terms of $\epsilon$ as $x^* +
@@ -265,7 +265,7 @@ interpretations related to a certain type of architecture for neural networks.
 </figure>
 
 In the standard autoencoder architecture, we use a neural network to predict
-it's own inputs. The goal is to learn a latent represention. The *encoder* part
+its own inputs. The goal is to learn a latent represention. The *encoder* part
 of the network maps the original input to the latent representation, while the
 *decoder* part attempts to reconstruct the original input using the latent
 representation. Training is done to minimize some form of reconstruction loss.  
