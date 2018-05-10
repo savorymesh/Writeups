@@ -7,9 +7,9 @@
   <title>The Variational Autoencoder Part I</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+      .smallcaps{font-variant: small-caps;}
+      .line-block{white-space: pre-line;}
+      .column{display: inline-block;}
   </style>
   <link rel="stylesheet" href="writeups.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
@@ -40,7 +40,7 @@
 <h3 id="problem-setup">Problem Setup</h3>
 <p>Suppose we have a task in which we are given some data <span class="math inline">\(x\)</span> and are looking to model things with some latent variables <span class="math inline">\(Z\)</span> which govern our data. We will represent this probabilistically with a very simple model: <span class="math display">\[
 p(x, z) = p(x | z) p(z)
-\]</span> Here, <span class="math inline">\(p(z)\)</span> is a prior on <span class="math inline">\(Z\)</span> and <span class="math inline">\(p(x | z)\)</span> is a conditional likelihood. We do not have access to the marginal <span class="math inline">\(p(x)\)</span> (wouldn’t that be nice?).</p>
+\]</span> Here, <span class="math inline">\(p(z)\)</span> is a prior on <span class="math inline">\(z\)</span> and <span class="math inline">\(p(x | z)\)</span> is a conditional likelihood. We do not have access to the marginal <span class="math inline">\(p(x)\)</span> (wouldn’t that be nice?).</p>
 <p>The generative process looks like</p>
 <ol type="1">
 <li>Sample some latent variables <span class="math inline">\(z\)</span> using <span class="math inline">\(p(z)\)</span></li>
@@ -119,7 +119,7 @@ q^*(z | x) =
 - \text{log } q(z|x) \big ) \nabla_\lambda q(z|x) \big ]
 \]</span> which we can now use Monte Carlo integration to take estimates of. We are going spare the reader the full derivation of this identity because as it turns out, the Monte Carlo estimates of this quantity have been shown to have very high variance, too high to reasonably use in many cases. It seems that we are back at square one with the issue of computing the gradient.</p>
 <h3 id="reparametrization-trick">Reparametrization Trick</h3>
-<p>We need to get an reasonable estimate of the gradient of the ELBO. To do so, we rely on a small trick known as the <em>reparametrization trick</em>. We attempt to represent the family of distributions <span class="math inline">\(\mathcal Q\)</span> in terms of a deterministic transformation <span class="math inline">\(T_\lambda(\epsilon, x)\)</span> of a fixed distribution <span class="math inline">\(\epsilon\)</span>. This sounds more complicated than it really is. For example, if <span class="math inline">\(\mathcal Q\)</span> is the family of <span class="math inline">\(N(x, \sigma)\)</span> distributions, we can let <span class="math inline">\(\epsilon\)</span> be a standard <span class="math inline">\(N(0,1)\)</span> distribution. If <span class="math inline">\(q_{\sigma^*} (z|x^*)\)</span> is distributed as <span class="math inline">\(N(x^*, \sigma^*)\)</span>, we write the distribution in terms of <span class="math inline">\(\epsilon\)</span> as <span class="math inline">\(x^* + \sigma^\star \epsilon\)</span>. Many families of probability distributions (such as location-scale families) can be represented this way.</p>
+<p>We need to get an reasonable estimate of the gradient of the ELBO. To do so, we rely on a small trick known as the <em>reparametrization trick</em>. We attempt to represent the family of distributions <span class="math inline">\(\mathcal Q\)</span> in terms of a deterministic transformation <span class="math inline">\(T_\lambda(\epsilon, x)\)</span> of a fixed distribution <span class="math inline">\(\epsilon\)</span>. This sounds more complicated than is really is. For example, if <span class="math inline">\(\mathcal Q\)</span> is the family of <span class="math inline">\(N(x, \sigma)\)</span> distributions, we can let <span class="math inline">\(\epsilon\)</span> be a standard <span class="math inline">\(N(0,1)\)</span> distribution. If <span class="math inline">\(q_{\sigma^*} (z|x^*)\)</span> is distributed as <span class="math inline">\(N(x^*, \sigma^*)\)</span>, we write the distribution in terms of <span class="math inline">\(\epsilon\)</span> as <span class="math inline">\(x^* + \sigma^\star \epsilon\)</span>. Many families of probability distributions (such as location-scale families) can be represented this way.</p>
 <p>Why do we do this? Recall that earlier we could not push in the gradient to compute <span class="math display">\[
 \nabla_{\theta, \lambda} \ \big [
 \text{E}_{q_\lambda (z|x)} \text{ log } q_\lambda(z|x) ) \big ]
@@ -136,7 +136,7 @@ q_\lambda \big ( T_\lambda(\epsilon, x) \big ) \big ]
 \text{ log }p_\theta(x|z)p(z) \big ]
 + \text{E}_{p(\epsilon)} \big [ \nabla_\lambda
 \text{ log } q_\lambda \big ( T_\lambda(\epsilon, x) \big ) \big ].
-\]</span> have much lower variance than the score function estimator, allows us to reasonably perform gradient descent. Finally, the hard part is out of the way! With this being done, we can now optimize the ELBO through standard gradient descent methods.</p>
+\]</span> have much lower variance than the score function estimator, allowing us to reasonably perform gradient descent. Finally, the hard part is out of the way! With this being done, we can now optimize the ELBO through standard gradient descent methods.</p>
 <h3 id="where-neural-nets-tie-in">Where Neural Nets Tie In</h3>
 <p>Let’s go back a little bit and recall that our overall goal was to find <span class="math display">\[
 \text{max}_{\theta \in \Theta, \lambda \in \Lambda}
@@ -148,7 +148,7 @@ q_\lambda \big ( T_\lambda(\epsilon, x) \big ) \big ]
 Simple diagram of autoencoder. Taken from the Keras blog.
 </figcaption>
 </figure>
-<p>In the standard autoencoder architecture, we use a neural network to predict its own inputs. The goal is to learn a latent represention. The <em>encoder</em> part of the network maps the original input to the latent representation, while the <em>decoder</em> part attempts to reconstruct the original input using the latent representation. Training is done to minimize some form of reconstruction loss.</p>
+<p>In the standard autoencoder architecture, we use a neural network to predict it’s own inputs. The goal is to learn a latent represention. The <em>encoder</em> part of the network maps the original input to the latent representation, while the <em>decoder</em> part attempts to reconstruct the original input using the latent representation. Training is done to minimize some form of reconstruction loss.</p>
 <p>This is surprisingly similar to our variational inference task. In particular, we can think <span class="math inline">\(q_\lambda (z|x)\)</span> as being a “stochastic encoder”, <span class="math inline">\(Z\)</span> as a stochastic encoding, and <span class="math inline">\(p_\theta (x|z)\)</span> as a “stochastic decoder”. We can exploit this analogy by parametrizing <span class="math inline">\(p_\theta(x|z)\)</span> and <span class="math inline">\(q_\lambda (z|x)\)</span> using layers of a neural network. That is, the weights in the encoding layer of a neural network will form the parameters <span class="math inline">\(\theta\)</span>, and the weights in decoding layers will contain the parameters <span class="math inline">\(\lambda\)</span>.</p>
 <figure align="center">
 <img width=500 src="https://jaan.io/images/encoder-decoder.png">
