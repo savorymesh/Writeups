@@ -30,7 +30,7 @@ So why can't we use compute this? Oftentimes, computing $p(x)$ turns out to be
 intractable. Here, $p(x)$ is called the *evidence*. If $Z$ is discrete, we must
 compute
 $$
-\sum_{support(Z)} p(x | z) p(z).
+\sum_{support(z)} p(x | z) p(z).
 $$
 As the size of $z$ increases, the difficulty of this sum grows exponentially.
 For example, if we have $Z$ be Bernoulli, we must compute $2^n$ sums if $z$ is

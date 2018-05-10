@@ -50,7 +50,7 @@ p(x, z) = p(x | z) p(z)
 p(z | x) = \frac{p(x, z) \times p (z)} {p(x)}.
 \]</span></p>
 <p>So why can’t we use compute this? Oftentimes, computing <span class="math inline">\(p(x)\)</span> turns out to be intractable. Here, <span class="math inline">\(p(x)\)</span> is called the <em>evidence</em>. If <span class="math inline">\(Z\)</span> is discrete, we must compute <span class="math display">\[
-\sum_{support(Z)} p(x | z) p(z).
+\sum_{support(z)} p(x | z) p(z).
 \]</span> As the size of <span class="math inline">\(z\)</span> increases, the difficulty of this sum grows exponentially. For example, if we have <span class="math inline">\(Z\)</span> be Bernoulli, we must compute <span class="math inline">\(2^n\)</span> sums if <span class="math inline">\(z\)</span> is of dimension <span class="math inline">\(n\)</span>. Similarly, if <span class="math inline">\(Z\)</span> is continuous, we may have issues computing <span class="math display">\[
 \int p(x | z) p(z) dz.
 \]</span> Having accepted that we can’t compute the posterior directly, we turn to other methods to approximate the posterior. One way of doing so is with MCMC, where we build a Markov chain whose stationary distribution represents our final outcome.</p>
@@ -159,12 +159,12 @@ Diagram of variational autoencoder. Taken from the Jaan Altosaar’s blog. Note 
 <p>For example, we might choose <span class="math inline">\(p_\theta(x|z)\)</span> and <span class="math inline">\(q_\lambda(z|x)\)</span> to be both Gaussian (as often is the case), and parametrize them as <span class="math display">\[
 q_\lambda (z|x) \sim N(\mu = Enc_1 (\lambda, z), \ \Sigma = Enc_2(\lambda, z) \odot I) \\
 p_\theta (x|z) \sim N(\mu = Dec_1 (\theta, z), \ \Sigma = Dec_2(\theta, z) \odot I)
-\]</span> A typical prior on <span class="math inline">\(z\)</span> might simply be a standard multivariate normal <span class="math inline">\(p(z) \sim N(0, I)\)</span>. Here, the point of using neural networks is exploit their power as functional appromixators, so that we can learn complex configurations in the parameter space for the distributions.</p>
+\]</span> A typical prior on <span class="math inline">\(Z\)</span> might simply be a standard multivariate normal <span class="math inline">\(p(z) \sim N(0, I)\)</span>. Here, the point of using neural networks is exploit their power as function appromixators, so that we can learn complex configurations in the parameter space for the distributions.</p>
 <p>For the variational autoencoder with our current setup, the overall process can be thought of like this:</p>
 <ul>
 <li>We input some data <span class="math inline">\(x_i\)</span></li>
 <li>The encoder layers output some means and covariances for a multivariate normal conditional on <span class="math inline">\(x_i\)</span></li>
-<li>We can sample from a <span class="math inline">\(N(0, I)\)</span> random variable and convert them into a sample from <span class="math inline">\(z\)</span> using the output of the encoder layers and the reparametrization trick.</li>
+<li>We can sample from a <span class="math inline">\(N(0, I)\)</span> random variable and convert them into a sample from <span class="math inline">\(Z\)</span> using the output of the encoder layers and the reparametrization trick.</li>
 <li>The sample is now run through the decoder to get more means and covariances: this is a “stochastic decoding”.</li>
 </ul>
 <h2 id="recommended-reading">Recommended Reading</h2>
@@ -174,6 +174,5 @@ p_\theta (x|z) \sim N(\mu = Dec_1 (\theta, z), \ \Sigma = Dec_2(\theta, z) \odot
 <li><a href="http://approximateinference.org/accepted/HoffmanJohnson2016.pdf">Performing some ELBO surgery</a></li>
 <li><a href="https://arxiv.org/pdf/1702.08658.pdf">Towards a deeper understanding</a></li>
 </ul>
-<p>The last link is quite notable in that the authors are able to alleviate the blurriness problems with VAEs.</p>
 </body>
 </html>
