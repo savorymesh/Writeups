@@ -1,5 +1,5 @@
 ---
-title: The Variational Autoencoder Part I
+title: Test
 ---
 
 ## Variational Bayes
